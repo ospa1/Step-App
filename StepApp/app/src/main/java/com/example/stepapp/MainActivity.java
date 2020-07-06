@@ -1,6 +1,7 @@
 package com.example.stepapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -8,6 +9,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,12 +35,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         ImageView image = findViewById(R.id.imageView);
         image.setImageResource(R.drawable.banana);
 
-        mPrefs = getSharedPreferences("user", 0);
-        numSteps = mPrefs.getFloat("steps",0);
-
         Steps = findViewById(R.id.counterView);
         numMiles = findViewById(R.id.numMilesView);
 
+        //get stored steps
+        mPrefs = getSharedPreferences("user", 0);
+        numSteps = mPrefs.getFloat("steps",0);
+
+        //get the step sensor
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         View StartButton = findViewById(R.id.startButton);
@@ -78,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //unregister listener to stop counting steps when away;
         sensorManager.unregisterListener(this);
 
-        //export steps
+        //TODO export steps
         //onStop and onDestroy can be killed by the system
 
 
@@ -90,6 +96,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+
+        // Update values when the sensor updates
         if (running){
             numSteps = event.values[0];
             Steps.setText(String.valueOf(numSteps));
@@ -100,6 +108,31 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        // Set up menu
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.stats:
+                //go to stats page
+                Intent intent = new Intent(MainActivity.this, Stats.class);
+                // intent.putExtra("key", value); optional parameters
+                MainActivity.this.startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }

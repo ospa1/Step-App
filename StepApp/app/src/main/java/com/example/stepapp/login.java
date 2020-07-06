@@ -38,7 +38,8 @@ public class login extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Todo check db for authentication then load mainActivity if correct details
+                //Todo see if its better for db to be in a higher scope
+                databaseHelper db = new databaseHelper(com.example.stepapp.login.this);
             }
         });
     }
