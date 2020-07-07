@@ -7,6 +7,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private SharedPreferences mPrefs;
 
+    databaseHelper db = new databaseHelper(this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Steps = findViewById(R.id.counterView);
         numMiles = findViewById(R.id.numMilesView);
 
-        //get stored steps
+        //get stored steps  ---- probably not needed
         mPrefs = getSharedPreferences("user", 0);
         numSteps = mPrefs.getFloat("steps",0);
 
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         //TODO export steps
         //onStop and onDestroy can be killed by the system
+        db.addSteps((int) numSteps);
 
 
         //stores the total number of steps
@@ -127,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             case R.id.stats:
                 //go to stats page
                 Intent intent = new Intent(MainActivity.this, Stats.class);
-                // intent.putExtra("key", value); optional parameters
+                //intent.putExtra("database", (Parcelable) db);
                 MainActivity.this.startActivity(intent);
                 return true;
             default:

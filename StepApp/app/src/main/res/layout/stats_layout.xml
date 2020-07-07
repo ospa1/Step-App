@@ -20,6 +20,7 @@
         android:id="@+id/total_miles_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="140dp"
         android:layout_marginEnd="32dp"
         android:text="Total Miles"

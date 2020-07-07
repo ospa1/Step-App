@@ -2,10 +2,18 @@ package com.example.stepapp;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class databaseHelper extends SQLiteOpenHelper {
+
+    final String user_table = "USER_TABLE";
+    final String id = "id";
+    final String userName = "userName";
+    final String step_table = "STEP_TABLE";
+    final String date = "date";
+    final String steps = "steps";
 
     public databaseHelper( Context context) {
         super(context, "User.db", null, 1);
@@ -16,11 +24,11 @@ public class databaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         //stores an id and username
-        String createTable = "CREATE TABLE USER_TABLE( id INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT UNIQUE);";
+        String createTable = "CREATE TABLE " + user_table + "( " + id + " INTEGER PRIMARY KEY AUTOINCREMENT, " + userName + " TEXT UNIQUE);";
         db.execSQL(createTable);
 
         //stores the date and number of steps and an id to link to the user table
-        createTable = "CREATE TABLE STEP_TABLE(id INTEGER, date TEXT, steps INTEGER, FOREIGN KEY(id) REFERENCES USER_TABLE(id));";
+        createTable = "CREATE TABLE " + step_table + "(" + id + " INTEGER, " + date + " TEXT, " + steps + " INTEGER, FOREIGN KEY(id) REFERENCES USER_TABLE(id));";
         db.execSQL(createTable);
     }
 
@@ -37,10 +45,10 @@ public class databaseHelper extends SQLiteOpenHelper {
 
         //add data to be inserted
         ContentValues cv = new ContentValues();
-        cv.put("userName", name);
+        cv.put(userName, name);
 
         //insert to table
-        long insert = db.insert("USER_TABLE", null, cv);
+        long insert = db.insert(user_table, null, cv);
 
         //check if it inserted successfully
         if(insert == -1){
@@ -52,17 +60,21 @@ public class databaseHelper extends SQLiteOpenHelper {
     }
 
     //add steps to the table
-    public boolean addSteps(int steps){
+    public boolean addSteps(int numSteps){
 
         //get editable database
         SQLiteDatabase db = this.getWritableDatabase();
 
         //add data to be inserted
         ContentValues cv = new ContentValues();
-        cv.put("steps", steps);
+        cv.put(steps, numSteps);
+
+        //TODO pass id and date
+        cv.put(id, 0);
+        cv.put(date, 0);
 
         //insert to table
-        long insert = db.insert("STEP_TABLE", null, cv);
+        long insert = db.insert(step_table, null, cv);
 
         //check if it inserted successfully
         if(insert == -1){
@@ -71,5 +83,19 @@ public class databaseHelper extends SQLiteOpenHelper {
         else{
             return true;
         }
+    }
+
+    public int getTotalSteps(){
+        int totalSteps = 0;
+
+        //get editable database
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT SUM(steps) FROM step_table WHERE id = 0", null);
+        final boolean b = cursor.moveToNext();
+        if(b){
+            totalSteps = cursor.getInt(0);
+        }
+        return totalSteps;
     }
 }
