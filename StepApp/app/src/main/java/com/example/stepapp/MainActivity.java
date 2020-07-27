@@ -7,8 +7,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Parcelable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +15,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
@@ -48,6 +51,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //get the step sensor
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
+        // Write a message to the database
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("User");
+        User user = new User();
+        user.addSteps(500);
+        user.setUsername("test-name");
+        mDatabase.child(user.getUsername()).setValue(user);
+
         View StartButton = findViewById(R.id.startButton);
         StartButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 running = false;
             }
         });
+
     }
 
     @Override
@@ -74,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (sensor != null){
             sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI);
         }
-        else{
+        else {
             Toast.makeText(this, "Sensor not found", Toast.LENGTH_SHORT).show();
         }
     }

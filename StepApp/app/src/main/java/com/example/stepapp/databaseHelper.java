@@ -10,7 +10,7 @@ public class databaseHelper extends SQLiteOpenHelper {
 
     final String user_table = "USER_TABLE";
     final String id = "id";
-    final String userName = "userName";
+    final static String userName = "userName";
     final String step_table = "STEP_TABLE";
     final String date = "date";
     final String steps = "steps";
@@ -91,7 +91,9 @@ public class databaseHelper extends SQLiteOpenHelper {
         //get editable database
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT SUM(steps) FROM step_table WHERE id = 0", null);
+        String query = "SELECT SUM(steps) FROM " + step_table + " WHERE id = 0";
+
+        Cursor cursor = db.rawQuery(query, null);
         final boolean b = cursor.moveToNext();
         if(b){
             totalSteps = cursor.getInt(0);
