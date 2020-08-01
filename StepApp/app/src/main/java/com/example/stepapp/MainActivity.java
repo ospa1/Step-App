@@ -34,6 +34,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private static final int RC_SIGN_IN = 123;
+    private FirebaseAuth mAuth;
     private SensorManager sensorManager;
     private float numSteps = 0;
     private boolean running = false;
@@ -85,9 +86,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
         });
 
-        // sign in
-        createSignInIntent();
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
 
+    }
+
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        // sign in if user is not signed in
+        if(currentUser == null){
+            // sign in
+            createSignInIntent();
+        }
+
+        //updateUI(currentUser);
     }
 
     @Override
