@@ -7,8 +7,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Stats extends AppCompatActivity {
-    //TODO call the database and get information
-    //TODO make the layout scrollable and keeps text on seperate lines
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

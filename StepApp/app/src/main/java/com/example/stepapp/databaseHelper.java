@@ -94,6 +94,8 @@ public class databaseHelper extends SQLiteOpenHelper {
         String query = "SELECT SUM(steps) FROM " + step_table + " WHERE id = 0";
 
         Cursor cursor = db.rawQuery(query, null);
+
+        // check for contents
         final boolean b = cursor.moveToNext();
         if(b){
             totalSteps = cursor.getInt(0);
