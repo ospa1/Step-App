@@ -56,19 +56,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Steps = findViewById(R.id.counterView);
         numMiles = findViewById(R.id.numMilesView);
 
-        //get stored steps  ---- probably not needed
-        mPrefs = getSharedPreferences("user", 0);
-        numSteps = mPrefs.getFloat("steps",0);
-
         //get the step sensor
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
-        // Write a message to the database
-        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("User");
-        User user = new User();
-        user.addSteps(500);
-        user.setUsername("test-name");
-        mDatabase.child(user.getUsername()).setValue(user);
 
         View StartButton = findViewById(R.id.startButton);
         StartButton.setOnClickListener(new View.OnClickListener() {
@@ -127,7 +116,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //unregister listener to stop counting steps when away;
         sensorManager.unregisterListener(this);
 
-        //TODO export steps
+        // export steps
+        // Write a message to the database
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference().child("User");
+        User user = new User();
+        user.addSteps((int) numSteps);
+        user.setUsername("user");
+        mDatabase.child(user.getUsername()).setValue(user);
         //onStop and onDestroy can be killed by the system
         db.addSteps((int) numSteps);
 

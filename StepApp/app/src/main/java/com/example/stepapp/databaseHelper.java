@@ -85,6 +85,7 @@ public class databaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    // queries the database for the total number of steps
     public int getTotalSteps(){
         int totalSteps = 0;
 
